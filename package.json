@@ -1,0 +1,25 @@
+{
+  "name": "gulu",
+  "version": "0.0.1",
+  "description": "一个基于Vue.js 封装的 UI 组件",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaozifan521/build-gulu.git"
+  },
+  "keywords": [
+    "vue",
+    "ui",
+    "js",
+    "javascript"
+  ],
+  "author": "Shaohongbo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaozifan521/build-gulu/issues"
+  },
+  "homepage": "https://github.com/shaozifan521/build-gulu#readme"
+}
