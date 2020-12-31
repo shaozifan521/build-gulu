@@ -1,9 +1,31 @@
 <template>
-  <button class="g-button">{{count}}</button>
+  <button class="g-button" :class="{[`icon-${iconPosition}`]: true}">
+    <svg v-if="icon" class="icon" aria-hidden="true">
+      <use :xlink:href="`#icon-${icon}`"></use>
+    </svg>
+    <!-- slot标签添加类名没有作用，会自动消失，所以需要在外层加一个div -->
+    <div class="content">
+      <slot></slot>
+    </div>
+  </button>
 </template>
 
 <script>
 export default {
+  props: {
+    icon: {
+      type: String
+    },
+    iconPosition: {
+      type: String,
+      default: 'left',
+      // 自定义验证函数
+      validator: function (value) {
+        // 这个值必须匹配下列字符串中的一个，当验证失败的时候控制台会抛出一个错误警告
+        return ['left', 'right'].indexOf(value) !== -1
+      }
+    }
+  },
   data () {
     return {
       count: '按钮1'
@@ -20,6 +42,11 @@ export default {
     padding: 0 1em;
     border-radius: var(--border-radius);
     border: 1px solid var(--border-color);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    // 盒子开启inline就会出现子元素水平位置对不起的bug，css的问题不要深究，根据经验一般加上这个属性，只要值不是默认的就可以解决
+    vertical-align: middle;
     &:hover {
       border-color: var(--border-color-hover);
     }
@@ -28,6 +55,23 @@ export default {
     }
     &:focus {
       outline: none;
+    }
+    .icon {
+      width: 1em; 
+      height: 1em;
+    }
+    .icon {
+      margin-right: 0.3em;
+    }
+  }
+  .icon-right {
+    .icon {
+      order: 2;
+      margin-left: 0.3em;
+      margin-right: 0;
+    }
+    .content {
+      order: 1;
     }
   }
 </style>
