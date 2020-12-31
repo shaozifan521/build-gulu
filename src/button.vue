@@ -1,8 +1,7 @@
 <template>
   <button class="g-button" :class="{[`icon-${iconPosition}`]: true}">
-    <svg v-if="icon" class="icon" aria-hidden="true">
-      <use :xlink:href="`#icon-${icon}`"></use>
-    </svg>
+    <g-icon class="icon" v-if="icon" :iconName="icon"></g-icon>
+    <g-icon class="loading" iconName="loading"></g-icon>
     <!-- slot标签添加类名没有作用，会自动消失，所以需要在外层加一个div -->
     <div class="content">
       <slot></slot>
@@ -35,6 +34,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  @keyframes spin {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+  }
   .g-button {
     height: var(--button-height);
     background-color: var(--button-bg);
@@ -57,11 +60,10 @@ export default {
       outline: none;
     }
     .icon {
-      width: 1em; 
-      height: 1em;
-    }
-    .icon {
       margin-right: 0.3em;
+    }
+    .loading {
+      animation: spin 1s infinite linear;
     }
   }
   .icon-right {
