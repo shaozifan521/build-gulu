@@ -1,7 +1,7 @@
 <template>
-  <button class="g-button" :class="{[`icon-${iconPosition}`]: true}">
-    <g-icon class="icon" v-if="icon" :iconName="icon"></g-icon>
-    <g-icon class="loading" iconName="loading"></g-icon>
+  <button class="g-button" :class="{[`icon-${iconPosition}`]: true}" @click="$emit('click')">
+    <g-icon class="icon" v-if="icon && !loading" :iconName="icon"></g-icon>
+    <g-icon v-if="loading" class="loading" iconName="loading"></g-icon>
     <!-- slot标签添加类名没有作用，会自动消失，所以需要在外层加一个div -->
     <div class="content">
       <slot></slot>
@@ -14,6 +14,10 @@ export default {
   props: {
     icon: {
       type: String
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
     iconPosition: {
       type: String,
