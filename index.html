@@ -23,6 +23,9 @@
     #app {
       margin: 20px;
     }
+    .wrapper {
+      margin: 20px;
+    }
     body {
       font-size: var(--font-size);
     }
@@ -30,22 +33,28 @@
 </head>
 <body>
   <div id="app">
-    <g-button icon="setting" icon-position="right" :loading="loading1" @click="loading1 = !loading1">
-      按钮1
-    </g-button>
-    <g-button icon="downLoad">
-      按钮2
-    </g-button>
-    <g-button>
-      按钮3
-    </g-button>
-    <g-button-group>
-      <g-button icon="left">上一页</g-button>
-      <g-button>更多</g-button>
-      <g-button icon="right" icon-position="right">下一页</g-button>
-    </g-button-group>
+    <div class="wrapper">
+      <g-input error="密码不能少于6位"></g-input>
+      <g-input disabled></g-input>
+    </div>
+    <div class="wrapper">
+      <g-button icon="setting" icon-position="right" :loading="loading1" @click="loading1 = !loading1">
+        按钮1
+      </g-button>
+      <g-button icon="downLoad">
+        按钮2
+      </g-button>
+      <g-button>
+        按钮3
+      </g-button>
+      <g-button-group>
+        <g-button icon="left">上一页</g-button>
+        <g-button>更多</g-button>
+        <g-button icon="right" icon-position="right">下一页</g-button>
+      </g-button-group>
+    </div>
   </div>
 </body>
 <script src="./src/app.js"></script>
-<script src="//at.alicdn.com/t/font_2302020_1rjg3sekc6c.js"></script>
+<script src="//at.alicdn.com/t/font_2302020_qbqzw120w3.js"></script>
 </html>

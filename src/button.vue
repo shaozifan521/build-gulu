@@ -68,6 +68,7 @@ export default {
     }
     .loading {
       animation: spin 1s infinite linear;
+      margin-right: 0.3em;
     }
   }
   .icon-right {
