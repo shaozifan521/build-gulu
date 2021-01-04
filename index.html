@@ -35,7 +35,8 @@
   <div id="app">
     <div class="wrapper">
       <g-input error="密码不能少于6位"></g-input>
-      <g-input disabled></g-input>
+      <g-input disabled value="测试1"></g-input>
+      <g-input @change="change" @input="input" @focus="focus" @blur="blur"></g-input>
     </div>
     <div class="wrapper">
       <g-button icon="setting" icon-position="right" :loading="loading1" @click="loading1 = !loading1">
