@@ -36,7 +36,9 @@
     <div class="wrapper">
       <g-input error="密码不能少于6位"></g-input>
       <g-input disabled value="测试1"></g-input>
-      <g-input @change="change" @input="input" @focus="focus" @blur="blur"></g-input>
+      <g-input v-model="message"></g-input>
+      <p>{{message}}</p>
+      <button @click="message+=1">测试双向数据绑定</button>
     </div>
     <div class="wrapper">
       <g-button icon="setting" icon-position="right" :loading="loading1" @click="loading1 = !loading1">
