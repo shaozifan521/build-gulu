@@ -1,5 +1,5 @@
 <template>
-  <div class="row" :style="{ 'margin-letf': -gutter / 2 + 'px', 'margin-right': -gutter / 2 + 'px' }">
+  <div class="row" :style="rowStyle">
     <slot></slot>
   </div>
 </template>
@@ -21,6 +21,15 @@ export default {
       vm.gutter = this.gutter
     })
   },
+  computed: {
+    rowStyle () {
+      let { gutter } = this
+      return {
+         'margin-left': -gutter / 2 + 'px',
+         'margin-right': -gutter / 2 + 'px' 
+      }
+    }
+  }
 }
 </script>
 
