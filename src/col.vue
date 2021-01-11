@@ -1,10 +1,22 @@
 <template>
   <div class="col" :class="colClass" :style="colStyle">
-    <slot></slot>
+    <div style="background-color: pink; border: 1px solid yellow">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
 <script>
+let validator = (value) => {
+  let valid = true
+  Object.keys(value).forEach(key => {
+    if (!['span'].includes(key)) {
+      valid = false
+    }
+  })
+  return valid
+}
+
 export default {
   props: {
     span: {
@@ -12,6 +24,22 @@ export default {
     },
     offset: {
       type: [String, Number]
+    },
+    phone: {
+      type: Object,
+      validator
+    },
+    ipad: {
+      type: Object,
+      validator
+    },
+    narrowPc: {
+      type: Object,
+      validator
+    },
+    pc: {
+      type: Object,
+      validator
     }
   },
   data () {
@@ -28,10 +56,14 @@ export default {
       }
     },
     colClass () {
-      let { span, offset } = this
+      let { span, offset, phone, ipad, narrowPc, pc } = this
       return [
         span && `col-${span}`,
-        offset && `offset-${offset}`
+        offset && `offset-${offset}`,
+        phone && `col-phone-${phone.span}`,
+        ipad && `col-ipad-${ipad.span}`,
+        narrowPc && `col-narrowPc-${narrowPc.span}`,
+        pc && `col-pc-${pc.span}`
       ]
     }
   }
@@ -55,5 +87,33 @@ export default {
         margin-left: ($i / 24) * 100%;
       }
     }
+    @media (max-width: 576px) {
+      @for $i from 1 through 24 {
+        &.col-phone-#{$i} {
+          width: ($i / 24) * 100%;
+        }
+      }
+    }    
+    @media (min-width: 577px) and (max-width: 768px) {
+      @for $i from 1 through 24 {
+        &.col-ipad-#{$i} {
+          width: ($i / 24) * 100%;
+        }
+      }
+    }    
+    @media (min-width: 769px) and (max-width: 992px) {
+      @for $i from 1 through 24 {
+        &.col-narrowPc-#{$i} {
+          width: ($i / 24) * 100%;
+        }
+      }
+    }    
+    @media (min-width: 993px) and (max-width: 1200px) {
+      @for $i from 1 through 24 {
+        &.col-pc-#{$i} {
+          width: ($i / 24) * 100%;
+        }
+      }
+    } 
   }
 </style>
