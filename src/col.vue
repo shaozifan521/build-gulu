@@ -1,8 +1,6 @@
 <template>
   <div class="col" :class="colClass" :style="colStyle">
-    <div style="background-color: pink; border: 1px solid yellow">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -25,10 +23,6 @@ export default {
     offset: {
       type: [String, Number]
     },
-    phone: {
-      type: Object,
-      validator
-    },
     ipad: {
       type: Object,
       validator
@@ -38,6 +32,10 @@ export default {
       validator
     },
     pc: {
+      type: Object,
+      validator
+    },
+    widePc: {
       type: Object,
       validator
     }
@@ -56,14 +54,14 @@ export default {
       }
     },
     colClass () {
-      let { span, offset, phone, ipad, narrowPc, pc } = this
+      let { span, offset, ipad, narrowPc, pc, widePc } = this
       return [
         span && `col-${span}`,
         offset && `offset-${offset}`,
-        phone && `col-phone-${phone.span}`,
         ipad && `col-ipad-${ipad.span}`,
-        narrowPc && `col-narrowPc-${narrowPc.span}`,
-        pc && `col-pc-${pc.span}`
+        narrowPc && `col-narrow-pc-${narrowPc.span}`,
+        pc && `col-pc-${pc.span}`,
+        widePc && `col-widePc-${widePc.span}`
       ]
     }
   }
@@ -86,31 +84,31 @@ export default {
       &.offset-#{$i} {
         margin-left: ($i / 24) * 100%;
       }
-    }
-    @media (max-width: 576px) {
-      @for $i from 1 through 24 {
-        &.col-phone-#{$i} {
-          width: ($i / 24) * 100%;
-        }
-      }
-    }    
-    @media (min-width: 577px) and (max-width: 768px) {
+    }  
+    @media (min-width: 577px) {
       @for $i from 1 through 24 {
         &.col-ipad-#{$i} {
           width: ($i / 24) * 100%;
         }
       }
     }    
-    @media (min-width: 769px) and (max-width: 992px) {
+    @media (min-width: 769px) {
       @for $i from 1 through 24 {
-        &.col-narrowPc-#{$i} {
+        &.col-narrow-pc-#{$i} {
           width: ($i / 24) * 100%;
         }
       }
     }    
-    @media (min-width: 993px) and (max-width: 1200px) {
+    @media (min-width: 993px) {
       @for $i from 1 through 24 {
         &.col-pc-#{$i} {
+          width: ($i / 24) * 100%;
+        }
+      }
+    } 
+    @media (min-width: 1201px) {
+      @for $i from 1 through 24 {
+        &.col-widePc-#{$i} {
           width: ($i / 24) * 100%;
         }
       }
