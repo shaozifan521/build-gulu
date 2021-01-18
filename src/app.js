@@ -36,7 +36,16 @@ new Vue({
   },
   methods: {
     showToadst () {
-      this.$toast('我是toast哦')
+      this.$toast('我是toast哦', {
+        closeButton: {
+          text: '知道了',
+          callBack (toast) {
+            // 测试callBack回调方法想要做的一些事情
+            toast.log()
+            console.log('客户说他知道了！')
+          }
+        }
+      })
     }
   },
 })
