@@ -36,7 +36,7 @@ new Vue({
   },
   methods: {
     showToadst () {
-      this.$toast('我是toast哦', {
+      this.$toast('我是toast哦<a href="http://www.w3school.com.cn">W3School</a>手动阀付撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所啊', {
         closeButton: {
           text: '知道了',
           callBack (toast) {
@@ -44,7 +44,8 @@ new Vue({
             toast.log()
             console.log('客户说他知道了！')
           }
-        }
+        },
+        enableHtml: true
       })
     }
   },

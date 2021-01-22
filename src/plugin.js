@@ -7,10 +7,11 @@ export default {
       let Constructor = Vue.extend(Toast)
       let toast = new Constructor({
         propsData: {
-          closeButton: toastOptions.closeButton
+          closeButton: toastOptions.closeButton,
+          enableHtml: toastOptions.enableHtml
         }
       })
-      toast.$slots.default = [message]
+      toast.$slots.default = message
       // 这里必须得mount一下，要不然toast组件里面的生命周期钩子都不会执行
       toast.$mount()
       document.body.appendChild(toast.$el)

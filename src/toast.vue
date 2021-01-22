@@ -1,8 +1,12 @@
 <template>
-  <div class="toast">
-    <slot></slot>
-    <div class="line"></div>
-    <span v-if="closeButton" @click="onClickClose()">
+  <div class="toast" ref="wrapper">
+    <div class="message">
+      <slot v-if="!enableHtml"></slot>
+      <!-- 可以支持传递标签显示 -->
+      <div v-else v-html="$slots.default"></div>
+    </div>
+    <div class="line" ref="line"></div>
+    <span class="close" v-if="closeButton" @click="onClickClose()">
       {{closeButton.text}}
     </span>
   </div>
@@ -17,7 +21,7 @@
       },
       autoCloseDelay: {
         type: Number,
-        default: 10
+        default: 100
       },
       closeButton: {
         type: Object,
@@ -27,6 +31,10 @@
             callBack: undefined
           }
         }
+      },
+      enableHtml: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -40,6 +48,10 @@
           this.close()
         }, this.autoCloseDelay * 1000);
       }
+      this.$nextTick(() => {
+        console.log(this.$refs.wrapper.getBoundingClientRect())
+        this.$refs.line.style.height = this.$refs.wrapper.getBoundingClientRect().height + 'px'
+      })
     },
     methods: {
       close () {
@@ -63,14 +75,14 @@
 
 <style scoped lang="scss">
   $font-size: 14px;
-  $toast-height: 40px;
+  $toast-min-height: 40px;
   $toast-bg: rgba(0, 0, 0, 0.75);
   .toast {
     position: fixed;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    height: $toast-height;
+    min-height: $toast-min-height;
     line-height: 1.8;
     background: $toast-bg;
     display: flex;
@@ -80,10 +92,16 @@
     border-radius: 4px;
     font-size: $font-size;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.50);
+    .message {
+      padding: 8px 0;
+    }
     .line {
       height: 100%;
       border-left: 1px solid #666;
       margin: 0 16px;
+    }
+    .close {
+      flex-shrink: 0;
     }
   }
 </style>
