@@ -45,7 +45,7 @@ new Vue({
             console.log('客户说他知道了！')
           }
         },
-        autoClose: false,
+        autoClose: true,
         autoCloseDelay: 5,
         enableHtml: true,
         position: 'top'
