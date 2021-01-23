@@ -1,5 +1,5 @@
 <template>
-  <div class="toast" ref="wrapper">
+  <div class="toast" ref="wrapper" :class="toastCLass">
     <div class="message">
       <slot v-if="!enableHtml"></slot>
       <!-- 可以支持传递标签显示 -->
@@ -35,6 +35,13 @@
       enableHtml: {
         type: Boolean,
         default: false
+      },
+      position: {
+        type: String,
+        default: 'top',
+        validator (value) {
+          return ['top', 'bottom', 'middle'].indexOf(value) !== -1
+        }
       }
     },
     data () {
@@ -70,6 +77,11 @@
         }
       }
     },
+    computed: {
+      toastCLass () {
+        return {[`positon-${this.position}`]: true}
+      }
+    }
   }
 </script>
 
@@ -79,7 +91,6 @@
   $toast-bg: rgba(0, 0, 0, 0.75);
   .toast {
     position: fixed;
-    top: 0;
     left: 50%;
     transform: translateX(-50%);
     min-height: $toast-min-height;
@@ -102,6 +113,16 @@
     }
     .close {
       flex-shrink: 0;
+    }
+    &.positon-top {
+      top: 0;
+    }
+    &.positon-bottom {
+      bottom: 0;
+    }
+    &.positon-middle {
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
     }
   }
 </style>

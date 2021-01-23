@@ -45,7 +45,10 @@ new Vue({
             console.log('客户说他知道了！')
           }
         },
-        enableHtml: true
+        autoClose: false,
+        autoCloseDelay: 5,
+        enableHtml: true,
+        position: 'top'
       })
     }
   },
