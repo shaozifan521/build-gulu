@@ -35,7 +35,16 @@ new Vue({
     message: 'hi1'
   },
   methods: {
-    showToadst () {
+    showToast1(){
+      this.showToast('top')
+    },
+    showToast2(){
+      this.showToast('middle')
+    },
+    showToast3(){
+      this.showToast('bottom')
+    },
+    showToast (position) {
       this.$toast('我是toast哦<a href="http://www.w3school.com.cn">W3School</a>手动阀付撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所撒多撒大所大所所所所所所所所所所所所所所所所所所所所所所所所所所所所所啊', {
         closeButton: {
           text: '知道了',
@@ -45,10 +54,10 @@ new Vue({
             console.log('客户说他知道了！')
           }
         },
-        autoClose: true,
+        autoClose: false,
         autoCloseDelay: 5,
         enableHtml: true,
-        position: 'top'
+        position
       })
     }
   },
