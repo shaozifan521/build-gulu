@@ -51,10 +51,29 @@
 <body>
   <div id="app">
     <div>
+      <g-tabs>
+        <g-tabs-head>
+          <template slot="actions">
+            <button>按钮1</button>
+          </template>
+          <g-tabs-item>
+            <g-icon icon-name="setting"></g-icon>美女
+          </g-tabs-item>
+          <g-tabs-item>体育</g-tabs-item>
+          <g-tabs-item>新闻</g-tabs-item>
+        </g-tabs-head>
+        <g-tabs-body>
+          <g-tabs-pane>美女1</g-tabs-pane>
+          <g-tabs-pane>体育2</g-tabs-pane>
+          <g-tabs-pane>新闻3</g-tabs-pane>
+        </g-tabs-body>
+      </g-tabs>
+    </div>
+    <!-- <div>
       <button @click="showToast1">top</button>
       <button @click="showToast2">middle</button>
       <button @click="showToast3">bottom</button>
-    </div>
+    </div> -->
     <!-- <div style="margin-bottom: 50px;">
       <g-layout style="height: 100vh;">
         <g-sider>sider</g-sider>
