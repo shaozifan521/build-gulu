@@ -1,15 +1,20 @@
 <template>
-  <div class="g-tabs-item" @click="xxx" :class="classes">
+  <div class="g-tabs-item" @click="onClick" :class="classes">
     <slot></slot>
   </div>
 </template>
 
 <script>
 export default {
+  name: 'GuluTabsItem',
   props: {
     name: {
       type: String|Number,
       required: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   inject: ['eventBus'],
@@ -26,13 +31,17 @@ export default {
   computed: {
     classes () {
       return {
-        active: this.active
+        active: this.active,
+        disabled: this.disabled
       }
     }
   },
   methods: {
-    xxx () {
-      this.eventBus.$emit('update:selected', this.name)
+    onClick () {
+      if (this.disabled) {
+        return
+      }
+      this.eventBus.$emit('update:selected', this.name, this)
     }
   },
 }
@@ -40,10 +49,18 @@ export default {
 
 <style scoped lang="scss">
   .g-tabs-item {
-    padding: 0 3em;
+    padding: 0 1em;
     flex-shrink: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
   }
   .active {
-    background: red;
+    // background: red;
+    color: blue;
+  }
+  .disabled {
+    color: #ddd;
   }
 </style>

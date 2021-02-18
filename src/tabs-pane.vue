@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'GuluTabsPane',
   inject: ['eventBus'],
   props: {
     name: {
@@ -35,6 +36,6 @@ export default {
 
 <style scoped lang="scss">
   .active {
-    background: red;
+    // background: yellow;
   }
 </style>
