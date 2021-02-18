@@ -42,7 +42,8 @@ new Vue({
   el: '#app',
   data: {
     loading1: false,
-    message: 'hi1'
+    message: 'hi1',
+    selectTab: 'news'
   },
   methods: {
     showToast1(){
