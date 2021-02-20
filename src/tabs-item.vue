@@ -62,5 +62,6 @@ export default {
   }
   .disabled {
     color: #ddd;
+    cursor: not-allowed;
   }
 </style>

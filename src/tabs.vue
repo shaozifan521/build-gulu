@@ -21,6 +21,9 @@ export default {
     }
   },
   mounted() {
+    if (this.$children.length === 0) {
+      throw new Error('g-tabs 的子组件应为 g-tabs-head 和 g-tabs-body，但是你没有写子组件')
+    }
     this.$children.forEach(vm => {
       if (vm.$options.name === 'GuluTabsHead') {
         vm.$children.forEach(childVm => {
