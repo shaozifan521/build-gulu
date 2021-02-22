@@ -48,6 +48,9 @@ new Vue({
     selectTab: 'news'
   },
   methods: {
+    yyy () {
+      console.log('用户的点击事件')
+    },
     showToast1(){
       this.showToast('top')
     },
