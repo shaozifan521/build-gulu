@@ -72,5 +72,26 @@ export default {
     border: 1px solid #333;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
     transform: translateY(-100%);
+    margin-top: -15px;
+    padding: 1em;
+    max-width: 20em;
+    word-wrap: break-word;
+    ::before, ::after {
+      content: '';
+      border: 10px solid transparent;
+      width: 0;
+      height: 0;
+      display: block;
+      position: absolute;
+      left: 10px;
+    }
+    ::before {
+      top: 100%;
+      border-top-color: black;
+    }
+    ::after {
+      top: calc(100% - 1px);
+      border-top-color: white;
+    }
   }
 </style>
