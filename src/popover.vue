@@ -31,23 +31,29 @@ export default {
       const contentWrapper = this.$refs.contentWrapper
       // 如果用户给 popover 外面套一个div，并且加上 overfollow: hidenn 属性，弹出内容就看不到了，所以需要把元素放在body上
       document.body.appendChild(contentWrapper)
+      let {height: cHeight} = contentWrapper.getBoundingClientRect()
       let {width, height, top, left} = this.$refs.triggerWrapper.getBoundingClientRect()
       // 如果用户给 popover 上面加一个盒子并且大小出现滚动条，如果不加上 window.scrollX 相对滚动的距离，则弹窗内容会出现样式偏差
-      if (this.position === 'top') {
-        contentWrapper.style.left = left + window.scrollX + 'px'
-        contentWrapper.style.top = top + window.scrollY + 'px'
-      } else if (this.position === 'bottom') {
-        contentWrapper.style.left = left + window.scrollX + 'px'
-        contentWrapper.style.top = top + height + window.scrollY + 'px'
-      } else if (this.position === 'left') {
-        let {height: cHeight} = contentWrapper.getBoundingClientRect()
-        contentWrapper.style.left = left + window.scrollX + 'px'
-        contentWrapper.style.top = top + window.scrollY - (cHeight - height) / 2 + 'px'
-      } else if (this.position === 'right') {
-        let {height: cHeight} = contentWrapper.getBoundingClientRect()
-        contentWrapper.style.left = left + window.scrollX + width + 'px'
-        contentWrapper.style.top = top + window.scrollY - (cHeight - height) / 2 + 'px'
+      let positions = {
+        top: {
+          top: contentWrapper.style.top = top + window.scrollY + 'px',
+          left: contentWrapper.style.left = left + window.scrollX + 'px'
+        },
+        bottom: {
+          top: contentWrapper.style.top = top + height + window.scrollY + 'px',
+          left: contentWrapper.style.left = left + window.scrollX + 'px'
+        },
+        left: {
+          top: contentWrapper.style.top = top + window.scrollY - (cHeight - height) / 2 + 'px',
+          left: contentWrapper.style.left = left + window.scrollX + 'px'
+        },
+        right: {
+          top: contentWrapper.style.top = top + window.scrollY - (cHeight - height) / 2 + 'px',
+          left: contentWrapper.style.left = left + window.scrollX + width + 'px'
+        }
       }
+      contentWrapper.style.top = positions[this.position].top
+      contentWrapper.style.left = positions[this.position].left
     },
     onClickDocument (e) {
       if ((this.$refs.popover && this.$refs.popover.contains(e.target)) || (this.$refs.contentWrapper && this.$refs.contentWrapper.contains(e.target))) {
