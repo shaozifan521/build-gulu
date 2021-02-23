@@ -1,5 +1,5 @@
 <template>
-  <div ref="popover" class="popover" @click="onClick" >
+  <div ref="popover" class="popover">
     <div ref="contentWrapper" v-if="visible" class="content-wrapper" :class="{[`position-${position}`]: true}">
       <slot name="content"></slot>
     </div>
@@ -19,6 +19,13 @@ export default {
       validator: function (value) {
         return ['top', 'bottom', 'left', 'right'].indexOf(value) !== -1
       }
+    },
+    trigger: {
+      type: String,
+      default: 'click',
+      validator: function (value) {
+        return ['click', 'hover'].indexOf(value) !== -1
+      }
     }
   },
   data () {
@@ -26,13 +33,30 @@ export default {
       visible: false
     }
   },
+  mounted() {
+    if (this.trigger === 'click') {
+      this.$refs.popover.addEventListener('click', this.onClick)
+    } else {
+      this.$refs.popover.addEventListener('mouseenter', this.open)
+      this.$refs.popover.addEventListener('mouseleave', this.close)
+    }
+  },
+  destroyed () {
+    // 自己添加的事件监听，vue检测不到，所以需要手动移除事件监听
+    if (this.trigger === 'click') {
+      this.$refs.popover.removeEventListener('click', this.onClick)
+    } else {
+      this.$refs.popover.removeEventListener('mouseenter', this.open)
+      this.$refs.popover.removeEventListener('mouseleave', this.close)
+    }
+  },
   methods: {
     positionContent () {
-      const contentWrapper = this.$refs.contentWrapper
+      const {contentWrapper, triggerWrapper} = this.$refs
       // 如果用户给 popover 外面套一个div，并且加上 overfollow: hidenn 属性，弹出内容就看不到了，所以需要把元素放在body上
       document.body.appendChild(contentWrapper)
       let {height: cHeight} = contentWrapper.getBoundingClientRect()
-      let {width, height, top, left} = this.$refs.triggerWrapper.getBoundingClientRect()
+      let {width, height, top, left} = triggerWrapper.getBoundingClientRect()
       // 如果用户给 popover 上面加一个盒子并且大小出现滚动条，如果不加上 window.scrollX 相对滚动的距离，则弹窗内容会出现样式偏差
       let positions = {
         top: {
