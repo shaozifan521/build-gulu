@@ -1,6 +1,6 @@
 <template>
   <div class="collapse-item">
-    <div class="title" @click="content = !content">
+    <div class="title" @click="show">
       {{title}}
     </div>
     <div class="content" v-if="content">
@@ -16,13 +16,38 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    name: {
+      type: String,
+      required: true
     }
   },
   data () {
     return {
       content: true
     }
-  }
+  },
+  inject: ['eventBus'],
+  mounted() {
+    this.eventBus && this.eventBus.$on('update:selected', (name) => {
+      if (name !== this.name) {
+        this.close()
+      }
+    })
+  },
+  methods: {
+    close () {
+      this.content = false
+    },
+    show () {
+      if (this.content) {
+        this.close()
+      } else {
+        this.content = true
+        this.eventBus && this.eventBus.$emit('update:selected', this.name)
+      }
+    }
+  },
 }
 </script>
 
@@ -50,7 +75,7 @@ export default {
     }
     // 当最后一个元素的title元素变成最后一个元素的时候
     &:last-child {
-       .title:last-child {
+      .title:last-child {
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
         margin-bottom: -1px;

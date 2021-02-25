@@ -49,7 +49,8 @@ new Vue({
   data: {
     loading1: false,
     message: 'hi1',
-    selectTab: 'news'
+    selectTab: 'news',
+    selectedtab: '2'
   },
   methods: {
     yyy () {
