@@ -29,8 +29,11 @@ export default {
   },
   inject: ['eventBus'],
   mounted() {
-    this.eventBus && this.eventBus.$on('update:selected', (name) => {
-      if (name !== this.name) {
+    // 初始化默认打开索引数
+    this.eventBus && this.eventBus.$on('update:selected', (names) => {
+      if (names.indexOf(this.name) !== -1) {
+        this.open()
+      } else {
         this.close()
       }
     })
@@ -39,12 +42,15 @@ export default {
     close () {
       this.content = false
     },
+    open () {
+      this.content = true
+    },
     show () {
       if (this.content) {
-        this.close()
+        // 是否打开关闭传到父组件中集中处理
+        this.eventBus && this.eventBus.$emit('update:removeSelected', this.name)
       } else {
-        this.content = true
-        this.eventBus && this.eventBus.$emit('update:selected', this.name)
+        this.eventBus && this.eventBus.$emit('update:addSelected', this.name)
       }
     }
   },

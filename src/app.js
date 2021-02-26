@@ -50,7 +50,7 @@ new Vue({
     loading1: false,
     message: 'hi1',
     selectTab: 'news',
-    selectedtab: '2'
+    selectedtab: ['2', '3']
   },
   methods: {
     yyy () {
