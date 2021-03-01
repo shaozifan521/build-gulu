@@ -51,14 +51,16 @@
 <body>
   <!-- <div style="height: 1000px; width: 2000px; border: 10px solid #666;"></div> -->
   <div id="app">
-    <div style="padding: 200px 400px;">
+    <div>
+      <g-cascader :source="source"></g-cascader>
+    </div>
+    <!-- <div style="padding: 200px 400px;">
       <g-collapse :selected.sync="selectedtab" single>
         <g-collapse-item title="标题1" name="1">内容1内容1内容1内容1内容1内容1</g-collapse-item>
         <g-collapse-item title="标题2" name="2">内容2内容2内容2内容2内容2内容2</g-collapse-item>
         <g-collapse-item title="标题3" name="3">内容3内容3内容3内容3内容3内容3</g-collapse-item>
-        {{selectedtab}}
       </g-collapse>
-    </div>
+    </div> -->
     <!-- <div>
       <div class="wrapper" @click="yyy" style="overflow: hidden;">
         <g-popover>
