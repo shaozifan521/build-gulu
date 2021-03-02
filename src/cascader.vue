@@ -1,19 +1,15 @@
 <template>
   <div>
-    <div class="trigger">
-      <slot></slot>
+    <div class="trigger" @click="popoverVisible = !popoverVisible">
     </div>
-    <div class="popover">
-      <div v-for="(item, index) in source" :key="index">
-        <!-- 引入的递归组件 -->
-        <cascader-item :sourceItem="item"></cascader-item>
-      </div>
+    <div class="popover" v-if="popoverVisible">
+      <cascader-items :sourceItem="source"></cascader-items>
     </div>
   </div>
 </template>
 
 <script>
-import CascaderItem from './cascader-item'
+import CascaderItems from './cascader-items'
 export default {
   name: "GuluCascader",
   props: {
@@ -23,15 +19,27 @@ export default {
   },
   data () {
     return {
-
+      popoverVisible: false,
+      item1Seleted: null,
+      item2Seleted: null
     }
   },
+  computed: {
+  },
   components: {
-    CascaderItem
+    CascaderItems
   }
 }
 </script>
 
 <style scoped lang="scss">
-
+  .trigger {
+    height: 32px;
+    width: 200px;
+    border: 1px solid pink;
+  }
+  .popover {
+    height: 200px;
+    width: 500px;
+  }
 </style>
