@@ -3,7 +3,8 @@ import Toast from './toast'
 let currentToast
 
 export default {
-  install (Vue, options) {
+  // Vue, options 应为两个参数
+  install (Vue) {
     Vue.prototype.$toast = function (message, toastOptions) {
       // 如果已经创建Toast组件，则销毁
       if (currentToast) {

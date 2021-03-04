@@ -9,7 +9,7 @@ export default {
   name: 'GuluTabsItem',
   props: {
     name: {
-      type: String|Number,
+      type: String,
       required: true
     },
     disabled: {

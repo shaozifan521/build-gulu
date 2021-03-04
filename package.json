@@ -2,38 +2,25 @@
   "name": "gulu",
   "version": "0.0.1",
   "description": "一个基于Vue.js 封装的 UI 组件",
-  "main": "index.js",
+  "private": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "parcel index.html"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shaozifan521/build-gulu.git"
-  },
-  "keywords": [
-    "vue",
-    "ui",
-    "js",
-    "javascript"
-  ],
-  "author": "Shaohongbo",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/shaozifan521/build-gulu/issues"
-  },
-  "homepage": "https://github.com/shaozifan521/build-gulu#readme",
   "dependencies": {
-    "vue": "^2.6.12",
-    "vue-hot-reload-api": "^2.3.4"
+    "core-js": "^2.6.5",
+    "vue": "^2.6.10"
   },
   "devDependencies": {
-    "@vue/component-compiler-utils": "^3.2.0",
-    "parcel-bundler": "^1.12.4",
-    "sass": "^1.32.0",
-    "vue-template-compiler": "^2.6.12"
-  },
-  "alias": {
-    "vue": "./node_modules/vue/dist/vue.common.js"
+    "@vue/cli-plugin-babel": "^3.12.0",
+    "@vue/cli-plugin-eslint": "^3.12.0",
+    "@vue/cli-service": "^3.12.0",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.0",
+    "vue-template-compiler": "^2.6.10"
   }
 }

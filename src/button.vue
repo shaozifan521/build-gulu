@@ -43,22 +43,22 @@ export default {
     100% {transform: rotate(360deg);}
   }
   .g-button {
-    height: var(--button-height);
-    background-color: var(--button-bg);
-    font-size: var(--font-size);
+    height: 32px;
+    background-color: white;
+    font-size: 14px;
     padding: 0 1em;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    border: 1px solid #999;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     // 盒子开启inline就会出现子元素水平位置对不起的bug，css的问题不要深究，根据经验一般加上这个属性，只要值不是默认的就可以解决
     vertical-align: middle;
     &:hover {
-      border-color: var(--border-color-hover);
+      border-color: #666;
     }
     &:active {
-      background-color: var(--button-active-bg);
+      background-color: #eee;
     }
     &:focus {
       outline: none;
