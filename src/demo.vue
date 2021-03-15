@@ -1,7 +1,6 @@
 <template>
   <div id="demo">
-      <g-cascader :source="source" height="300px" :selected="selected" @update:selected="selected = $event"></g-cascader>
-    <span>22222222</span>
+      <g-cascader :source="source" height="300px" :selected.sync="selected"></g-cascader>
   </div>
 </template>
 
