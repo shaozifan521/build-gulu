@@ -1,7 +1,6 @@
 <template>
   <div id="demo">
-    <span>11111111</span>
-      <g-cascader :source="source" height="300px"></g-cascader>
+      <g-cascader :source="source" height="300px" :selected="selected" @update:selected="selected = $event"></g-cascader>
     <span>22222222</span>
   </div>
 </template>
@@ -52,7 +51,8 @@ export default {
             name: '庐阳'
           }]
         }]
-      }]
+      }],
+      selected: []
     }
   }
 }
@@ -63,5 +63,8 @@ export default {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+  #demo {
+    margin: 200px;
   }
 </style>

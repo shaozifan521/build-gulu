@@ -1,13 +1,13 @@
 <template>
   <div class="cascader-items" :style="{height: height}">
     <div class="left">
-      <div class="label" v-for="(item, index) in sourceItem" :key="index" @click="leftSeleted = item">
+      <div class="label" v-for="(item, index) in sourceItem" :key="index" @click="onClickLabel(item)">
         {{item.name}}
         <g-icon class="icon" v-if="item.children" iconName="right"></g-icon>
       </div>
     </div>
     <div class="right" v-if="rightItems">
-      <gulu-cascader-items :sourceItem="rightItems"></gulu-cascader-items>
+      <gulu-cascader-items :sourceItem="rightItems" :style="{height: height}" :level="level+1" :selected="selected" @update:selected="onUpdateSelected"></gulu-cascader-items>
     </div>
   </div>
 </template>
@@ -21,6 +21,13 @@ export default {
     },
     height: {
       type: String
+    },
+    selected: {
+      type: Array
+    },
+    level: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -28,15 +35,28 @@ export default {
       leftSeleted: null
     }
   },
-   computed: {
-     rightItems () {
-       if (this.leftSeleted && this.leftSeleted.children) {
-         return this.leftSeleted.children
-       } else {
-         return null
-       }
-     }
-   }
+  computed: {
+    rightItems () {
+      let currentSelected = this.selected[this.level]
+      if (currentSelected && currentSelected.children) {
+        return currentSelected.children
+      } else {
+        return null
+      }
+    }
+  },
+  methods: {
+    onClickLabel (item) {
+      let copySelected = JSON.parse(JSON.stringify(this.selected))
+      copySelected[this.level] = item
+      // splice 更新右侧数据列表
+      copySelected.splice(this.level + 1)
+      this.$emit('update:selected', copySelected)
+    },
+    onUpdateSelected (newSelected) {
+      this.$emit('update:selected', newSelected)
+    }
+  },
 }
 </script>
 
@@ -44,6 +64,7 @@ export default {
   .cascader-items {
     display: flex;
     min-width: 85px;
+    height: 200px;
     .left {
       padding: 10px;
       height: 100%;
