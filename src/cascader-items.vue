@@ -63,11 +63,12 @@ export default {
 <style scoped lang="scss">
   .cascader-items {
     display: flex;
-    min-width: 85px;
+    // min-width: 85px;
     height: 200px;
     .left {
       padding: 10px;
       height: 100%;
+      overflow-y: auto;
       .label {
         display: flex;
         align-items: center;
