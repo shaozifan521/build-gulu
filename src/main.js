@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import App from './demo.vue'
+// import App from './demo.vue'
+import SlidesDemo from './slidesDemo.vue'
 import Button from './button'
 import Icon from './icon'
 import ButtonGroup from './button-group'
@@ -22,6 +23,8 @@ import Popover from './popover'
 import Collapse from './collapse'
 import CollapseItem from './collapse-item'
 import Cascader from './cascader'
+import Slides from './slides'
+import SlidesItem from './slides-item'
 
 // 引入阿里字体图标
 import '@/assets/icon/iconfont.css'
@@ -48,11 +51,13 @@ Vue.component('g-popover', Popover)
 Vue.component('g-collapse', Collapse)
 Vue.component('g-collapse-item', CollapseItem)
 Vue.component('g-cascader', Cascader)
+Vue.component('g-slides', Slides)
+Vue.component('g-slides-item', SlidesItem)
 
 Vue.use(Plugin)
 
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  render: h => h(SlidesDemo),
 }).$mount('#app')
