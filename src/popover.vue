@@ -79,6 +79,7 @@ export default {
       contentWrapper.style.top = positions[this.position].top
       contentWrapper.style.left = positions[this.position].left
     },
+    // 处理popover本身和弹出内容区域以外，剩下所有的地方点击则关闭
     onClickDocument (e) {
       if ((this.$refs.popover && this.$refs.popover.contains(e.target)) || (this.$refs.contentWrapper && this.$refs.contentWrapper.contains(e.target))) {
         return
