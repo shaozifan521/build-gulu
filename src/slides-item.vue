@@ -43,13 +43,13 @@
 </script>
 
 <style lang="scss" scoped>
-  .g-slides-item {
-  }
+  // 当元素离开过渡动画时，使其脱离文档流
   .slide-leave-active {
     position: absolute;
     left: 0; top: 0;
     width: 100%;
     height: 100%;
+    // display: none;
   }
   .slide-enter-active, .slide-leave-active {
     transition: all 0.5s;

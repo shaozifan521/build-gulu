@@ -41,7 +41,7 @@ export default {
       this.$refs.popover.addEventListener('mouseleave', this.close)
     }
   },
-  destroyed () {
+  beforeDestroy() {
     // 自己添加的事件监听，vue检测不到，所以需要手动移除事件监听
     if (this.trigger === 'click') {
       this.$refs.popover.removeEventListener('click', this.onClick)
