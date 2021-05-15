@@ -1,6 +1,7 @@
 import Vue from 'vue'
 // import App from './demo.vue'
-import SlidesDemo from './slidesDemo.vue'
+// import SlidesDemo from './slidesDemo.vue'
+import NavDemo from './navDemo.vue'
 import Button from './button'
 import Icon from './icon'
 import ButtonGroup from './button-group'
@@ -59,5 +60,5 @@ Vue.use(Plugin)
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(SlidesDemo),
+  render: h => h(NavDemo),
 }).$mount('#app')
