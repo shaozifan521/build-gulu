@@ -38,6 +38,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  @import "./var";
   @keyframes spin {
     0% {transform: rotate(0deg);}
     100% {transform: rotate(360deg);}
@@ -67,7 +68,7 @@ export default {
       margin-right: 0.3em;
     }
     .loading {
-      animation: spin 1s infinite linear;
+      @include spin;
       margin-right: 0.3em;
     }
   }

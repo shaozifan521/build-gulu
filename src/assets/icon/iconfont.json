@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14918213",
+      "name": "shang",
+      "font_class": "asc",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "21627627",
+      "name": "shang",
+      "font_class": "desc",
+      "unicode": "e6bb",
+      "unicode_decimal": 59067
+    },
+    {
       "icon_id": "2849274",
       "name": "成功",
       "font_class": "success",

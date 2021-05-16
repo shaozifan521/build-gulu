@@ -3,10 +3,16 @@
     <table class="gulu-table" :class="{bordered, compact, striped: striped}">
       <thead>
       <tr>
-        <th><input type="checkbox" @change="onChangeAllItems" ref="allChecked"/></th>
+        <th><input type="checkbox" @change="onChangeAllItems" ref="allChecked" :checked="areAllItemsSelected"/></th>
         <th v-if="numberVisible">#</th>
         <th v-for="column in columns" :key="column.field">
-          {{column.text}}
+          <div class="gulu-table-header">
+            {{column.text}}
+            <span v-if="column.field in orderBy" class="gulu-table-sorter" @click="changeOrderBy(column.field)">
+              <g-icon iconName="asc" :class="{active: orderBy[column.field] === 'asc'}"/>
+              <g-icon iconName="desc" :class="{active: orderBy[column.field] === 'desc'}"/>
+            </span>
+          </div>
         </th>
       </tr>
       </thead>
@@ -23,6 +29,9 @@
       </tr>
       </tbody>
     </table>
+    <div v-if="loading" class="gulu-table-loading">
+      <g-icon name="loading"/>
+    </div>
   </div>
 </template>
 
@@ -68,6 +77,35 @@
       bordered: {
         type: Boolean,
         default: false
+      },
+      orderBy: {
+        type: Object,
+        default: () => ({}),
+      },
+      loading: {
+        type: Boolean,
+        default: false
+      },
+    },
+    computed: {
+      areAllItemsSelected () {
+        // sort方法会改变原数组，所以这里先用map转换一下，map会返回一个新数组，然后在进行排序
+        const a = this.dataSource.map(item => item.id).sort()
+        const b = this.selectedItems.map(item => item.id).sort()
+        // 这里是否显示全选的逻辑是：先判断选中的数组列表和数据源长度是否相等？
+        // 如果相等，在循环源数据中的id每一项，和排序后的数据列表进行每一项id对比
+        // 如果都相等，则返回ture 全选
+        if (a.length !== b.length) { 
+          return false
+        }
+        let equal = true
+        for (let i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) {
+            equal = false
+            break
+          }
+        }
+        return equal
       }
     },
     watch: {
@@ -107,6 +145,19 @@
       onChangeAllItems (e) {
         let selected = e.target.checked
         this.$emit('update:selectedItems', selected ? this.dataSource : [])
+      },
+      changeOrderBy (key) {
+        const copy = JSON.parse(JSON.stringify(this.orderBy))
+        let oldValue = copy[key]
+        if (oldValue === 'asc') {
+          copy[key] = 'desc'
+        } else if (oldValue === 'desc') {
+          copy[key] = true
+        } else {
+          copy[key] = 'asc'
+        }
+        // 使用单向数据流的方式更新用户点击的排序选择
+        this.$emit('update:orderBy', copy)
       }
     }
   }
@@ -146,6 +197,51 @@
             background: lighten($grey, 10%);
           }
         }
+      }
+    }
+    &-sorter {
+      display: inline-flex;
+      flex-direction: column;
+      margin: 0 4px;
+      cursor: pointer;
+      svg {
+        width: 10px;
+        height: 10px;
+        fill: $grey;
+        &.active {
+          fill: #409eff;
+        }
+        &:first-child {
+          position: relative;
+          bottom: -1px;
+        }
+        &:nth-child(2) {
+          position: relative;
+          top: -1px;
+        }
+      }
+    }
+    &-header {
+      display: flex;
+      align-items: center;
+    }
+    &-wrapper {
+      position: relative;
+    }
+    &-loading {
+      background: rgba(255, 255, 255, 0.8);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      svg {
+        width: 50px;
+        height: 50px;
+        @include spin;
       }
     }
   }
