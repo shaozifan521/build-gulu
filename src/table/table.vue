@@ -1,34 +1,36 @@
 <template>
-  <div class="gulu-table-wrapper">
-    <table class="gulu-table" :class="{bordered, compact, striped: striped}">
-      <thead>
-      <tr>
-        <th><input type="checkbox" @change="onChangeAllItems" ref="allChecked" :checked="areAllItemsSelected"/></th>
-        <th v-if="numberVisible">#</th>
-        <th v-for="column in columns" :key="column.field">
-          <div class="gulu-table-header">
-            {{column.text}}
-            <span v-if="column.field in orderBy" class="gulu-table-sorter" @click="changeOrderBy(column.field)">
+  <div class="gulu-table-wrapper" ref="wrapper">
+    <div :style="{height, overflow: 'auto'}">
+      <table class="gulu-table" :class="{bordered, compact, striped: striped}" ref="table">
+        <thead>
+        <tr>
+          <th><input type="checkbox" @change="onChangeAllItems" ref="allChecked" :checked="areAllItemsSelected"/></th>
+          <th v-if="numberVisible">#</th>
+          <th v-for="column in columns" :key="column.field">
+            <div class="gulu-table-header">
+              {{column.text}}
+              <span v-if="column.field in orderBy" class="gulu-table-sorter" @click="changeOrderBy(column.field)">
               <g-icon iconName="asc" :class="{active: orderBy[column.field] === 'asc'}"/>
               <g-icon iconName="desc" :class="{active: orderBy[column.field] === 'desc'}"/>
             </span>
-          </div>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr v-for="item,index in dataSource" :key="item.id">
-        <td>
-          <input type="checkbox" @change="onChangeItem(item, index, $event)"
-            :checked="inSelectedItems(item)"
-          /></td>
-        <td v-if="numberVisible">{{index+1}}</td>
-        <template v-for="column in columns">
-          <td :key="column.field">{{item[column.field]}}</td>
-        </template>
-      </tr>
-      </tbody>
-    </table>
+            </div>
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item,index in dataSource" :key="item.id">
+          <td>
+            <input type="checkbox" @change="onChangeItem(item, index, $event)"
+              :checked="inSelectedItems(item)"
+            /></td>
+          <td v-if="numberVisible">{{index+1}}</td>
+          <template v-for="column in columns">
+            <td :key="column.field">{{item[column.field]}}</td>
+          </template>
+        </tr>
+        </tbody>
+      </table>
+    </div>
     <div v-if="loading" class="gulu-table-loading">
       <g-icon name="loading"/>
     </div>
@@ -78,14 +80,40 @@
         type: Boolean,
         default: false
       },
+      // 支持排序的列表，以及升序还是降序
       orderBy: {
         type: Object,
         default: () => ({}),
       },
+      // 是否加载loading
       loading: {
         type: Boolean,
         default: false
       },
+      // 接收一个表格高度，即可实现固定表头
+      height: {
+        type: [Number, String]
+      },
+    },
+    mounted () {
+      // 拷贝原table
+      let table2 = this.$refs.table.cloneNode(true)
+      // 把拷贝的table保存到全局中
+      this.table2 = table2
+      // 给拷贝的table新增一个类名
+      table2.classList.add('gulu-table-copy')
+      // 把拷贝的table放到原table容器中
+      this.$refs.wrapper.appendChild(table2)
+      // 更新复制的table的列宽
+      this.updateHeadersWidth()
+      // 当浏览器窗口宽度变化时，重新计算table列宽
+      this.onWindowResize = () => this.updateHeadersWidth()
+      window.addEventListener('resize', this.onWindowResize)
+    },
+    // 组件销毁之前，移除绑定的事件监听
+    beforeDestroy () {
+      this.table2.remove()
+      window.removeEventListener('resize', this.onWindowResize)
     },
     computed: {
       areAllItemsSelected () {
@@ -158,6 +186,28 @@
         }
         // 使用单向数据流的方式更新用户点击的排序选择
         this.$emit('update:orderBy', copy)
+      },
+      // 复制过的表头宽度会失效，所以需要找到原表头的宽度，然后重新赋值即可
+      updateHeadersWidth () {
+        // 获取拷贝的table
+        let table2 = this.table2
+        // 获取原table的表头部分
+        let tableHeader = Array.from(this.$refs.table.children).filter(node => node.tagName.toLowerCase() === 'thead')[0]
+        // 循环遍历，只报了拷贝table的表头部分
+        let tableHeader2
+        Array.from(table2.children).map(node => {
+          if (node.tagName.toLowerCase() !== 'thead') {
+            node.remove()
+          } else {
+            tableHeader2 = node
+          }
+        })
+        // 循环遍历原table的表头并获取各列宽的宽度
+        Array.from(tableHeader.children[0].children).map((th, i) => {
+          const {width} = th.getBoundingClientRect()
+          // 把获取的原table表头各列宽的宽度赋值给拷贝的table表头
+          tableHeader2.children[0].children[i].style.width = width + 'px'
+        })
       }
     }
   }
@@ -227,6 +277,7 @@
     }
     &-wrapper {
       position: relative;
+      overflow: auto;
     }
     &-loading {
       background: rgba(255, 255, 255, 0.8);
@@ -243,6 +294,14 @@
         height: 50px;
         @include spin;
       }
+    }
+    // 把复制的固定表头定位到表格最上面（即实现了固定表头）
+    &-copy {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: white;
     }
   }
 </style>
