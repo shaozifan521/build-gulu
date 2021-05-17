@@ -1,17 +1,20 @@
 <template>
   <div>
     {{orderBy}}
-    <div style="margin: 20px;">
+    <div style="margin: 50px;">
       <g-table :columns="columns" :data-source="dataSource" bordered :selected-items.sync="selected"
         :order-by.sync="orderBy"
-        @update:orderBy="x"
-        :loading="loading"
-        height="400px">
+        @update:orderBy="x" :loading="loading" :height="400" expend-field="description" checkable>
+        <template slot-scope="xxx">
+          <button @click="edit(xxx.item)">编辑</button>
+          <button @click="view(xxx.item)">查看</button>
+          <button>删除</button>
+        </template>
       </g-table>
     </div>
-    <!-- <div style="margin: 20px;">
-      <g-table :columns="columns" :data-source="dataSource" bordered compact :striped="false"></g-table>
-    </div> -->
+    <div style="margin: 20px;">
+      <g-table :columns="columns" :data-source="dataSource" bordered compact :striped="false" checkable expend-field="description"></g-table>
+    </div>
   </div>
 </template>
 <script>
@@ -24,8 +27,9 @@
         // 用户选中的数据
         selected: [],
         // 表头数据
+        // width 自定义列宽
         columns: [
-          {text: '姓名', field: 'name'},
+          {text: '姓名', field: 'name', width: 100},
           {text: '分数', field: 'score'},
         ],
         // 支持排序的列
@@ -38,9 +42,10 @@
         // 是否显示loading
         loading: false,
         // 表格数据
+        // description 表格行展开的描述信息
         dataSource: [
-          {id: 1, name: '方方', score: 100},
-          {id: 2, name: '圆圆', score: 99},
+          {id: 1, name: '方方', score: 100, description: 'xxxx xxxx'},
+          {id: 2, name: '圆圆', score: 99, description: 'yyyy yyyy'},
           {id: 3, name: '张三', score: 100},
           {id: 4, name: '李四', score: 99},
           {id: 5, name: '超人', score: 100},
@@ -63,6 +68,13 @@
       }
     },
     methods: {
+      // 表格的编辑方法
+      edit (item) {
+        alert(`开始编辑${item.id}`)
+      },
+      view (item) {
+        alert(`开始查看${item.id}`)
+      },
       x (newVal) {
         // 通过单向数据流获取用户排序的选择信息（newVal），根据用户选择升序或者降序的标识
         // 向后台传递标识信息，后台操作升序降序返回对应数据回来处理

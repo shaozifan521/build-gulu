@@ -1,12 +1,16 @@
 <template>
   <div class="gulu-table-wrapper" ref="wrapper">
-    <div :style="{height, overflow: 'auto'}">
+    <div :style="{height, overflow: 'auto'}" ref="tableWrapper">
       <table class="gulu-table" :class="{bordered, compact, striped: striped}" ref="table">
         <thead>
         <tr>
-          <th><input type="checkbox" @change="onChangeAllItems" ref="allChecked" :checked="areAllItemsSelected"/></th>
-          <th v-if="numberVisible">#</th>
-          <th v-for="column in columns" :key="column.field">
+          <!-- 表头中有只要有描述信息的一列就显示空白单元格 -->
+          <th v-if="expendField" :style="{width: '50px'}" class="gulu-table-center"></th>
+          <!-- 表头中勾选单元格 -->
+          <th v-if="checkable" :style="{width: '50px'}" class="gulu-table-center">
+            <input type="checkbox" @change="onChangeAllItems" ref="allChecked" :checked="areAllItemsSelected"/></th>
+          <th :style="{width: '50px'}" v-if="numberVisible">#</th>
+          <th :style="{width: column.width + 'px'}" v-for="column in columns" :key="column.field">
             <div class="gulu-table-header">
               {{column.text}}
               <span v-if="column.field in orderBy" class="gulu-table-sorter" @click="changeOrderBy(column.field)">
@@ -15,24 +19,51 @@
             </span>
             </div>
           </th>
+          <!-- 操作列表头 -->
+          <th ref="actionsHeader" v-if="$scopedSlots.default">操作列</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item,index in dataSource" :key="item.id">
-          <td>
-            <input type="checkbox" @change="onChangeItem(item, index, $event)"
-              :checked="inSelectedItems(item)"
-            /></td>
-          <td v-if="numberVisible">{{index+1}}</td>
-          <template v-for="column in columns">
-            <td :key="column.field">{{item[column.field]}}</td>
-          </template>
-        </tr>
+        <!-- 当有多个平级标签需要渲染同一个列表数据时，可以使用template标签
+        将它们包起来，但是template标签上不能写key值 -->
+        <template v-for="item,index in dataSource">
+          <tr :key="item.id">
+            <!-- 是否展开描述信息列按钮 -->
+            <td v-if="expendField" :style="{width: '50px'}" class="gulu-table-center">
+              <g-icon class="gulu-table-expendIcon" iconName="right"
+                @click="expendItem(item.id)"/>
+            </td>
+            <!-- 表体中勾选单元格 -->
+            <td v-if="checkable" :style="{width: '50px'}" class="gulu-table-center">
+              <input type="checkbox" @change="onChangeItem(item, index, $event)"
+                :checked="inSelectedItems(item)"
+              /></td>
+            <td :style="{width: '50px'}" v-if="numberVisible">{{index+1}}</td>
+            <template v-for="column in columns">
+              <td :style="{width: column.width + 'px'}" :key="column.field">{{item[column.field]}}</td>
+            </template>
+            <!-- 操作列表体部分 -->
+            <td v-if="$scopedSlots.default">
+              <div ref="actions" style="display: inline-block;">
+                <slot :item="item"></slot>
+              </div>
+            </td>
+          </tr>
+          <!-- 展示描述信息的表格行 -->
+          <tr v-if="inExpendedIds(item.id)" :key="`${item.id}-expend`">
+            <!-- 描述行信息默认和有内容的第一列对齐 -->
+            <td :style="{width: '50px'}"></td>
+            <td :style="{width: '50px'}"></td>
+            <td :colspan="columns.length + expendedCellColSpan">
+              {{item[expendField] || '空'}}
+            </td>
+          </tr>
+        </template>
         </tbody>
       </table>
     </div>
     <div v-if="loading" class="gulu-table-loading">
-      <g-icon name="loading"/>
+      <g-icon iconName="loading"/>
     </div>
   </div>
 </template>
@@ -40,6 +71,11 @@
 <script>
   export default {
     name: "GuluTable",
+    data () {
+      return {
+        expendedIds: [] // 保存表格描述行信息
+      }
+    },
     props: {
       // 是否显示斑马纹
       striped: {
@@ -92,23 +128,64 @@
       },
       // 接收一个表格高度，即可实现固定表头
       height: {
-        type: [Number, String]
+        type: Number
       },
+      // 表格行描述信息字段
+      expendField: {
+        type: String
+      },
+      // 是否带有勾选的表格
+      checkable: {
+        type: Boolean,
+        default: false
+      }
     },
     mounted () {
-      // 拷贝原table
-      let table2 = this.$refs.table.cloneNode(true)
+      // 拷贝原table（默认不拷贝表格里面的元素，第一个方案拷贝，会出现排序按钮无法点击的问题）
+      let table2 = this.$refs.table.cloneNode(false)
       // 把拷贝的table保存到全局中
       this.table2 = table2
       // 给拷贝的table新增一个类名
       table2.classList.add('gulu-table-copy')
-      // 把拷贝的table放到原table容器中
+      // 获取原table表头
+      let tHead = this.$refs.table.children[0]
+      // 获取原table表头高度
+      let {height} = tHead.getBoundingClientRect()
+      // 设置表格容器margin-top
+      this.$refs.tableWrapper.style.marginTop = height + 'px'
+      // 设置表格容器高度
+      this.$refs.tableWrapper.style.height = this.height - height + 'px'
+      // 把原table中的表头添加到拷贝的table中，这样就解决了表头中的点击事件不可用的bug
+      table2.appendChild(tHead)
+      // 把拷贝的table添加到表格容器中
       this.$refs.wrapper.appendChild(table2)
-      // 更新复制的table的列宽
-      this.updateHeadersWidth()
-      // 当浏览器窗口宽度变化时，重新计算table列宽
-      this.onWindowResize = () => this.updateHeadersWidth()
-      window.addEventListener('resize', this.onWindowResize)
+      // 计算操作列的信息
+      if (this.$scopedSlots.default) {
+        // 获取用户传递过来操作列的整体元素
+        let div = this.$refs.actions[0]
+        // 获取操作列的整体宽度
+        let {width} = div.getBoundingClientRect()
+        // 获取操作列的单元格
+        let parent = div.parentNode
+        // 获取操作列单元格的所有样式
+        let styles = getComputedStyle(parent)
+        let paddingLeft = styles.getPropertyValue('padding-left')
+        let paddingRight = styles.getPropertyValue('padding-right')
+        let borderLeft = styles.getPropertyValue('border-left-width')
+        let borderRight = styles.getPropertyValue('border-right-width')
+        let width2 = width + parseInt(paddingRight) + parseInt(paddingRight) + parseInt(borderLeft) + parseInt(borderRight) + 'px'
+        // 把获取到操作列宽度赋值给操作列表头（解决操作列宽度对不齐的bug）
+        this.$refs.actionsHeader.style.width = width2
+        // 把获取到操作列宽度赋值给操作列表体中的每个单元格（解决操作列宽度对不齐的bug）
+        this.$refs.actions.map(div => {
+          div.parentNode.style.width = width2
+        })
+      }
+      // // 更新复制的table的列宽
+      // this.updateHeadersWidth()
+      // // 当浏览器窗口宽度变化时，重新计算table列宽
+      // this.onWindowResize = () => this.updateHeadersWidth()
+      // window.addEventListener('resize', this.onWindowResize)
     },
     // 组件销毁之前，移除绑定的事件监听
     beforeDestroy () {
@@ -134,6 +211,15 @@
           }
         }
         return equal
+      },
+      // 计算描述行所占的单元格
+      expendedCellColSpan () {
+        // 默认描述行是占一整行的（包括操作列）
+        let result = 1
+        // 如果有勾选框多占一个单元格，如果有描述行多再多占一个单元格
+        if (this.checkable) { result += 1 }
+        if (this.expendField) { result += 1 }
+        return result
       }
     },
     watch: {
@@ -187,27 +273,40 @@
         // 使用单向数据流的方式更新用户点击的排序选择
         this.$emit('update:orderBy', copy)
       },
+      // 查找 expendedIds 中是否描述信息，如果有返还true
+      inExpendedIds (id) {
+        return this.expendedIds.indexOf(id) >= 0
+      },
+      // 展开表格描述行函数
+      expendItem (id) {
+        // 如果保存的有则删除，否则添加（这里删除和添加其实操作的是描述行是否展开与收起）
+        if (this.inExpendedIds(id)) {
+          this.expendedIds.splice(this.expendedIds.indexOf(id), 1)
+        } else {
+          this.expendedIds.push(id)
+        }
+      },
       // 复制过的表头宽度会失效，所以需要找到原表头的宽度，然后重新赋值即可
       updateHeadersWidth () {
-        // 获取拷贝的table
-        let table2 = this.table2
-        // 获取原table的表头部分
-        let tableHeader = Array.from(this.$refs.table.children).filter(node => node.tagName.toLowerCase() === 'thead')[0]
-        // 循环遍历，只报了拷贝table的表头部分
-        let tableHeader2
-        Array.from(table2.children).map(node => {
-          if (node.tagName.toLowerCase() !== 'thead') {
-            node.remove()
-          } else {
-            tableHeader2 = node
-          }
-        })
-        // 循环遍历原table的表头并获取各列宽的宽度
-        Array.from(tableHeader.children[0].children).map((th, i) => {
-          const {width} = th.getBoundingClientRect()
-          // 把获取的原table表头各列宽的宽度赋值给拷贝的table表头
-          tableHeader2.children[0].children[i].style.width = width + 'px'
-        })
+        // // 获取拷贝的table
+        // let table2 = this.table2
+        // // 获取原table的表头部分
+        // let tableHeader = Array.from(this.$refs.table.children).filter(node => node.tagName.toLowerCase() === 'thead')[0]
+        // // 循环遍历，只报了拷贝table的表头部分
+        // let tableHeader2
+        // Array.from(table2.children).map(node => {
+        //   if (node.tagName.toLowerCase() !== 'thead') {
+        //     node.remove()
+        //   } else {
+        //     tableHeader2 = node
+        //   }
+        // })
+        // // 循环遍历原table的表头并获取各列宽的宽度
+        // Array.from(tableHeader.children[0].children).map((th, i) => {
+        //   const {width} = th.getBoundingClientRect()
+        //   // 把获取的原table表头各列宽的宽度赋值给拷贝的table表头
+        //   tableHeader2.children[0].children[i].style.width = width + 'px'
+        // })
       }
     }
   }
@@ -302,6 +401,13 @@
       left: 0;
       width: 100%;
       background: white;
+    }
+    &-expendIcon {
+      width: 10px;
+      height: 10px;
+    }
+    & &-center {
+      text-align: center;
     }
   }
 </style>
