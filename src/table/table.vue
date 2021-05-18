@@ -38,9 +38,19 @@
               <input type="checkbox" @change="onChangeItem(item, index, $event)"
                 :checked="inSelectedItems(item)"
               /></td>
+            <!-- 表体中序号单元格 -->
             <td :style="{width: '50px'}" v-if="numberVisible">{{index+1}}</td>
+            <!-- 表体中内容单元格 -->
             <template v-for="column in columns">
-              <td :style="{width: column.width + 'px'}" :key="column.field">{{item[column.field]}}</td>
+              <td :style="{width: column.width + 'px'}" :key="column.field">
+                <!-- 如果有自定义的单元格则显示自定义的，否则正常显示 -->
+                <template v-if="column.render">
+                  <vnodes :vnodes="column.render({value: item[column.field]})"></vnodes>
+                </template>
+                <template v-else>
+                  {{item[column.field]}}
+                </template>
+              </td>
             </template>
             <!-- 操作列表体部分 -->
             <td v-if="$scopedSlots.default">
@@ -73,7 +83,8 @@
     name: "GuluTable",
     data () {
       return {
-        expendedIds: [] // 保存表格描述行信息
+        expendedIds: [], // 保存表格描述行信息
+        columns: [] // 保存子组件 table-column 的表头数据信息
       }
     },
     props: {
@@ -93,10 +104,10 @@
         default: false
       },
       // 表头数据
-      columns: {
-        type: Array,
-        required: true
-      },
+      // columns: {
+      //   type: Array,
+      //   required: true
+      // },
       // 表格数据
       dataSource: {
         type: Array,
@@ -141,6 +152,15 @@
       }
     },
     mounted () {
+      // 如果table-column组件写了 slot标签，可以换另外一种方式遍历循环
+      // 遍历循环table的子组件table-column里的内容，并返回
+      this.columns = this.$slots.default.map(node => {
+        let {text, field, width} = node.componentOptions.propsData
+        let render = node.data.scopedSlots && node.data.scopedSlots.default
+        return {text, field, width, render}
+      })
+      let result = this.columns[0].render({value: '方方'})
+      console.log(result)
       // 拷贝原table（默认不拷贝表格里面的元素，第一个方案拷贝，会出现排序按钮无法点击的问题）
       let table2 = this.$refs.table.cloneNode(false)
       // 把拷贝的table保存到全局中
@@ -308,7 +328,14 @@
         //   tableHeader2.children[0].children[i].style.width = width + 'px'
         // })
       }
-    }
+    },
+    components: {
+      // 如何把标签渲染到模板里？google出的答案处理方式
+      vnodes: {
+        functional: true,
+        render: (h, context) => context.props.vnodes
+      }
+    },
   }
 </script>
 

@@ -2,9 +2,24 @@
   <div>
     {{orderBy}}
     <div style="margin: 50px;">
-      <g-table :columns="columns" :data-source="dataSource" bordered :selected-items.sync="selected"
+      <g-table :data-source="dataSource" bordered :selected-items.sync="selected"
         :order-by.sync="orderBy"
         @update:orderBy="x" :loading="loading" :height="400" expend-field="description" checkable>
+        <g-table-column text="姓名" field="name" :width="100">
+          <template slot-scope="props">
+            <a :href="`/users/${props.value}`">{{props.value}}</a>
+          </template>
+        </g-table-column>
+        <g-table-column text="分数" field="score" :width="200">
+          <template slot-scope="props">
+            <span style="color: red;">{{props.value}}</span>
+          </template>
+        </g-table-column>
+        <g-table-column text="分数111" :width="200">
+          <template slot-scope="props">
+            <g-input></g-input>
+          </template>
+        </g-table-column>
         <template slot-scope="xxx">
           <button @click="edit(xxx.item)">编辑</button>
           <button @click="view(xxx.item)">查看</button>
@@ -12,26 +27,39 @@
         </template>
       </g-table>
     </div>
-    <div style="margin: 20px;">
-      <g-table :columns="columns" :data-source="dataSource" bordered compact :striped="false" checkable expend-field="description"></g-table>
-    </div>
+    <!-- <div style="margin: 20px;">
+      <g-table :columns="columns" :data-source="dataSource" bordered compact :striped="false" checkable expend-field="description">
+        <g-table-column text="姓名" field="name" :width="100">
+          <template slot-scope="props">
+            <a :href="`/users/${props.value}`">{{props.value}}</a>
+          </template>
+        </g-table-column>
+        <g-table-column text="分数" field="score"></g-table-column>
+        <template slot-scope="xxx">
+          <button @click="edit(xxx.item)">编辑</button>
+          <button @click="view(xxx.item)">查看</button>
+          <button>删除</button>
+        </template>
+      </g-table>
+    </div> -->
   </div>
 </template>
 <script>
   import GTable from './table/table'
+  import GTableColumn from './table-column'
   export default {
     name: "demo",
-    components: {GTable},
+    components: {GTable, GTableColumn},
     data () {
       return {
         // 用户选中的数据
         selected: [],
         // 表头数据
         // width 自定义列宽
-        columns: [
-          {text: '姓名', field: 'name', width: 100},
-          {text: '分数', field: 'score'},
-        ],
+        // columns: [
+        //   {text: '姓名', field: 'name', width: 100},
+        //   {text: '分数', field: 'score'},
+        // ],
         // 支持排序的列
         // asc：升序
         // desc：降序
